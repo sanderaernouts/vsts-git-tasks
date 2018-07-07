@@ -1,0 +1,19 @@
+{
+  "name": "vsts-git-tasks",
+  "version": "0.0.1",
+  "description": "Git related tasks for VSTS",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node \"_build\\run.js\""
+  },
+  "author": "Sander Aernouts",
+  "license": "ISC",
+  "dependencies": {
+    "vso-node-api": "^6.5.0",
+    "vsts-task-lib": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.5.2"
+  }
+}
