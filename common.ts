@@ -1,24 +1,25 @@
 import * as vm from 'vso-node-api';
 import * as lim from 'vso-node-api/interfaces/LocationsInterfaces';
 
-function getEnv(name: string): string {
-    let val = String(process.env[name]);
+export function getEnv(name: string): string {
+    let val = process.env[name];
     if (!val) {
-        console.error(name + ' env var not set');
+        console.error(name + ' environment variable is not set');
         process.exit(1);
     }
     return val;
 }
 
 export async function getWebApi(): Promise<vm.WebApi> {
-    let serverUrl = getEnv('API_URL');
+    let serverUrl = getEnv('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI');
+    console.log("connecting to VSTS web API's on server: \""+ serverUrl +"\"")
     return await this.getApi(serverUrl);
 }
 
 export async function getApi(serverUrl: string): Promise<vm.WebApi> {
     return new Promise<vm.WebApi>(async (resolve, reject) => {
         try {
-            let token = getEnv('API_TOKEN');
+            let token = getEnv('SYSTEM_ACCESSTOKEN');
             let authHandler = vm.getPersonalAccessTokenHandler(token);
             let option = undefined;
 
@@ -45,7 +46,7 @@ export async function getApi(serverUrl: string): Promise<vm.WebApi> {
             // };
             let vsts: vm.WebApi = new vm.WebApi(serverUrl, authHandler, option);
             let connData: lim.ConnectionData = await vsts.connect();
-            console.log('Hello ' + connData.authenticatedUser.providerDisplayName);
+            console.log('authenticated as user: "' + connData.authenticatedUser.providerDisplayName +'"');
             resolve(vsts);
         }
         catch (err) {
@@ -55,7 +56,15 @@ export async function getApi(serverUrl: string): Promise<vm.WebApi> {
 }
 
 export function getProject(): string {
-    return getEnv('API_PROJECT');
+    return getEnv('SYSTEM_TEAMPROJECT');
+}
+
+export function getRepositoryProvider(): string {
+    return getEnv('BUILD_REPOSITORY_PROVIDER')
+}
+
+export function getRepositoryName(): string {
+    return getEnv('BUILD_REPOSITORY_NAME')
 }
 
 export function banner(title: string): void {

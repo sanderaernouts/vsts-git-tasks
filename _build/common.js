@@ -10,16 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vm = require("vso-node-api");
 function getEnv(name) {
-    let val = String(process.env[name]);
+    let val = process.env[name];
     if (!val) {
-        console.error(name + ' env var not set');
+        console.error(name + ' environment variable is not set');
         process.exit(1);
     }
     return val;
 }
+exports.getEnv = getEnv;
 function getWebApi() {
     return __awaiter(this, void 0, void 0, function* () {
-        let serverUrl = getEnv('API_URL');
+        let serverUrl = getEnv('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI');
+        console.log("connecting to VSTS web API's on server: \"" + serverUrl + "\"");
         return yield this.getApi(serverUrl);
     });
 }
@@ -28,7 +30,7 @@ function getApi(serverUrl) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let token = getEnv('API_TOKEN');
+                let token = getEnv('SYSTEM_ACCESSTOKEN');
                 let authHandler = vm.getPersonalAccessTokenHandler(token);
                 let option = undefined;
                 // The following sample is for testing proxy
@@ -54,7 +56,7 @@ function getApi(serverUrl) {
                 // };
                 let vsts = new vm.WebApi(serverUrl, authHandler, option);
                 let connData = yield vsts.connect();
-                console.log('Hello ' + connData.authenticatedUser.providerDisplayName);
+                console.log('authenticated as user: "' + connData.authenticatedUser.providerDisplayName + '"');
                 resolve(vsts);
             }
             catch (err) {
@@ -65,9 +67,17 @@ function getApi(serverUrl) {
 }
 exports.getApi = getApi;
 function getProject() {
-    return getEnv('API_PROJECT');
+    return getEnv('SYSTEM_TEAMPROJECT');
 }
 exports.getProject = getProject;
+function getRepositoryProvider() {
+    return getEnv('BUILD_REPOSITORY_PROVIDER');
+}
+exports.getRepositoryProvider = getRepositoryProvider;
+function getRepositoryName() {
+    return getEnv('BUILD_REPOSITORY_NAME');
+}
+exports.getRepositoryName = getRepositoryName;
 function banner(title) {
     console.log('=======================================');
     console.log('\t' + title);
