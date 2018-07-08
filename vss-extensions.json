@@ -1,0 +1,66 @@
+{
+    "manifestVersion": 1,
+    "id": "git-buildtasks",
+    "name": "git tasks",
+    "version": "0.0.1",
+    "publisher": "",
+    "public" : false,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/sanderaernouts/vsts-git-tasks"
+    },
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],    
+    "description": "Git related tasks for VSTS",
+    "categories": [
+        "Build and release"
+    ],
+    "content": {
+        "details": {
+            "path": "README.md"
+        },
+        "license": {
+            "path": "LICENSE"
+        }
+    },
+    "tags": [
+    ],
+    "links": {
+        "home": {
+            "uri": "https://github.com/sanderaernouts/vsts-git-tasks"
+        },
+        "repository": {
+            "uri": "https://github.com/sanderaernouts/vsts-git-tasks"
+        },
+        "issues": {
+            "uri": "https://github.com/sanderaernouts/vsts-git-tasks/issues"
+        }
+    },
+    "branding": {
+        "color": "rgb(248,153,56)",
+        "theme": "light"
+    },
+    "icons": {
+        "default": "images/extension-icon.png"        
+    },
+    "files": [
+        {
+            "path": "tasks/createpullrequest"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "git-create-pullrequest",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/createpullrequest"
+            }
+        }
+    ]
+}

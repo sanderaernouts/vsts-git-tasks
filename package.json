@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node \"_build\\run.js\""
+    "test": "npm run build && node \"_build\\tests\\createpullrequest\\test.js\""
   },
   "author": "Sander Aernouts",
   "license": "ISC",

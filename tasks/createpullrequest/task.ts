@@ -1,4 +1,4 @@
-import * as cm from './common';
+import * as cm from '../common';
 import * as vm from 'vso-node-api';
 
 import * as ga from 'vso-node-api/GitApi';
