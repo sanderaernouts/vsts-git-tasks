@@ -1,14 +1,14 @@
-// do first just to ensure variables set
-// export API_URL=https://buildcanary.visualstudio.com/DefaultCollection
-// export export API_TOKEN=<yourAllScopesApiToken>
-// export API_PROJECT=test
 import * as cm from '../../tasks/common';
+import tmrm = require('vsts-task-lib/mock-run');
+import path = require('path');
 
-function run() {
-    console.log('Running tests');
-    cm.banner('Test');
-    var task = require('../../tasks/createpullrequest/task.js');
-    task.run();
-}
+let taskPath = path.join(__dirname, '../../tasks/createpullrequest', 'createPullRequest.js');
+let tr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
+tr.setInput("autoComplete", "true");
+tr.setInput("sourceBranch", "refs/heads/test");
+tr.setInput("targetBranch", "refs/heads/master");
 
-run();
+tr.registerMock('vsts-task-lib/toolrunner', require('vsts-task-lib/mock-toolrunner'));
+console.log('Running tests');
+cm.banner('Test');
+tr.run(); 
