@@ -3,7 +3,7 @@
     "id": "git-buildtasks",
     "name": "git tasks",
     "version": "0.0.1",
-    "publisher": "",
+    "publisher": "sander-aernouts",
     "public" : false,
     "repository": {
         "type": "git",
@@ -48,7 +48,7 @@
     },
     "files": [
         {
-            "path": "_build/tasks/createpullrequest"
+            "path": "tasks"
         }
     ],
     "contributions": [
