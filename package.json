@@ -7,7 +7,7 @@
     "bash": "bash -c",
     "clean": "npm run bash \"find -maxdepth 1 -type d -name _build -exec rm -r {} \\;\"",
     "compile": "tsc",
-    "copy": "npm run bash \"find tasks/ -not -type d -not -name *.ts -print0 | xargs -0 -I{} cp --parents {} ./_build && cp extension-icon.png _build && cp vss-extension.json _build\"",
+    "copy": "npm run bash \"find tasks/ -not -type d -not -name *.ts -print0 | xargs -0 -I{} cp --parents {} ./_build && cp README.md _build && cp extension-icon.png _build && cp vss-extension.json _build\"",
     "build": "npm run clean && npm run compile && npm run copy",
     "test": "npm run build && node \"_build/tests/createpullrequest/test.js\""
   },
