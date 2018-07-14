@@ -44,7 +44,7 @@
         "theme": "light"
     },
     "icons": {
-        "default": "images/extension-icon.png"        
+        "default": "extension-icon.png"        
     },
     "files": [
         {
