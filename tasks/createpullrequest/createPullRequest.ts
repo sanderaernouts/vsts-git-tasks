@@ -67,7 +67,7 @@ async function run() {
         setAutoComplete.autoCompleteSetBy = pullRequest.createdBy;
         setAutoComplete.completionOptions = <gi.GitPullRequestCompletionOptions>{};
         setAutoComplete.completionOptions.bypassPolicy = taskLib.getBoolInput("bypassPolicy");
-        setAutoComplete.completionOptions.deleteSourceBranch = taskLib.getBoolInput("bypassPolicy");
+        setAutoComplete.completionOptions.deleteSourceBranch = taskLib.getBoolInput("deleteSourceBranch");
         setAutoComplete.completionOptions.squashMerge = taskLib.getBoolInput("squashMerge");
     }
 
