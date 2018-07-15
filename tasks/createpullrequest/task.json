@@ -77,8 +77,8 @@
         },
         {
             "name": "squashMerge",
-            "type": "Squash merge",
-            "label": "Auto complete",
+            "type": "boolean",
+            "label": "Squash merge",
             "defaultValue": false,
             "required": false,
             "helpMarkDown": "Perform a squash merge when merging the pull request into the target branch",
