@@ -3,7 +3,7 @@
     "name": "GitCreatePullRequest",
     "friendlyName": "Create pull request",
     "description": "Automatically create a git pull request.",
-    "helpMarkDown": "",
+    "helpMarkDown": "Create a pull request in the build's git repository.",
     "category": "Utility",
     "runsOn": [
         "Agent",
