@@ -48,8 +48,17 @@
     },
     "files": [
         {
-            "path": "tasks"
-        }
+            "path": "createPullRequest/createPullRequest.js"
+          },
+          {
+            "path": "createPullRequest/node_modules"
+          },
+          {
+            "path": "createPullRequest/task.json"
+          },
+          {
+            "path": "createPullRequest/icon.png"
+      }
     ],
     "contributions": [
         {
