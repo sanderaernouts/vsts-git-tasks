@@ -99,7 +99,7 @@ function getEnv(name: string): string {
 async function getWebApi(): Promise<vm.WebApi> {
     let serverUrl = getEnv("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
     console.log(`connecting to VSTS web API"s on server: "${serverUrl}"`);
-    return await this.getApi(serverUrl);
+    return await getApi(serverUrl);
 }
 
 async function getApi(serverUrl: string): Promise<vm.WebApi> {
