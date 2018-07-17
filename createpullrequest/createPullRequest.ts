@@ -1,27 +1,26 @@
 import path = require('path');
 
-import * as cm from '../common';
 import * as vm from 'vso-node-api';
+import * as lim from 'vso-node-api/interfaces/LocationsInterfaces';
 
 import * as ga from 'vso-node-api/GitApi';
 import * as gi from 'vso-node-api/interfaces/GitInterfaces';
-import { IdentityRef } from 'vso-node-api/interfaces/common/VSSInterfaces';
 
 import * as taskLib from 'vsts-task-lib/task';
 
 async function run() {
 
-    var provider = cm.getRepositoryProvider();
+    var provider = getRepositoryProvider();
 
-    if(provider.indexOf("Git") < 0) {
-        throw 'detected a repository provider that is not Git. Provider "' + provider + '" is not supported.'
+    if(provider != "TfsGit") {
+        throw 'detected a repository provider that is not TfsGit. Provider "' + provider + '" is not supported.'
     }
 
-    let vsts: vm.WebApi = await cm.getWebApi();
+    let vsts: vm.WebApi = await getWebApi();
     let gitApi: ga.IGitApi = await vsts.getGitApi();
 
-    const project: string = cm.getProject();
-    const repositoryName = cm.getRepositoryName();
+    const project: string = getProject();
+    const repositoryName = getRepositoryName();
 
     console.log(`searching for repository "${repositoryName}" in project "${project}"`)
 
@@ -91,3 +90,49 @@ run().then((result) => {
         taskLib.setResult(taskLib.TaskResult.Failed, !!error.message ? error.message : error)
     }
 );
+
+
+
+function getEnv(name: string): string {
+    let val = process.env[name];
+    if (!val) {
+        console.error(name + ' environment variable is not set');
+        process.exit(1);
+    }
+    return val;
+}
+
+async function getWebApi(): Promise<vm.WebApi> {
+    let serverUrl = getEnv('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI');
+    console.log("connecting to VSTS web API's on server: \""+ serverUrl +"\"")
+    return await this.getApi(serverUrl);
+}
+
+async function getApi(serverUrl: string): Promise<vm.WebApi> {
+    return new Promise<vm.WebApi>(async (resolve, reject) => {
+        try {
+            let token = getEnv('SYSTEM_ACCESSTOKEN');
+            let authHandler = vm.getPersonalAccessTokenHandler(token);
+            let option = undefined;
+            let vsts: vm.WebApi = new vm.WebApi(serverUrl, authHandler, option);
+            let connData: lim.ConnectionData = await vsts.connect();
+            console.log('authenticated as user: "' + connData.authenticatedUser.providerDisplayName +'"');
+            resolve(vsts);
+        }
+        catch (err) {
+            reject(err);
+        }
+    });
+}
+
+function getProject(): string {
+    return getEnv('SYSTEM_TEAMPROJECT');
+}
+
+function getRepositoryProvider(): string {
+    return getEnv('BUILD_REPOSITORY_PROVIDER')
+}
+
+function getRepositoryName(): string {
+    return getEnv('BUILD_REPOSITORY_NAME')
+}

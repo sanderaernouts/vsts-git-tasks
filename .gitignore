@@ -58,10 +58,5 @@ typings/
 .env
 
 #compiled Javascript
-tasks/**/*.js
-
-#secrets
-set-env-secrets.ps1
-
-#build
-_build
+*.js
+*.d.ts
