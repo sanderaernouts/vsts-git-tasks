@@ -68,7 +68,7 @@
                 "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "tasks/createpullrequest"
+                "name": "createpullrequest"
             }
         }
     ]

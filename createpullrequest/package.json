@@ -6,7 +6,8 @@
   "scripts": {
     "initdev:npm": "npm install",
     "initdev": "npm run initdev:npm",
-    "build": "tsc && tslint --project . && npm dedupe && npm prune --production"
+    "build":"tsc && tslint --project .",
+    "build:prod": "npm run initdev && npm run build && npm dedupe && npm prune --production"
   },
   "author": "Sander Aernouts",
   "license": "ISC",
