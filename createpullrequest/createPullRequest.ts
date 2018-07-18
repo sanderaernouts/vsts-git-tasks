@@ -61,20 +61,18 @@ async function run() {
     let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repository.id, project, true);
     console.log(`created pull request with id ${pullRequest.pullRequestId}`);
 
-    let autoComplete: boolean = tl.getBoolInput("autoComplete");
-
-    if (autoComplete) {
-        let setAutoComplete = <gi.GitPullRequest>{};
-        setAutoComplete.autoCompleteSetBy = pullRequest.createdBy;
-        await gitApi.updatePullRequest(setAutoComplete, repository.id, pullRequest.pullRequestId, project);
-    }
-
     if (tl.getBoolInput("approve")) {
 
         let approve: gi.IdentityRefWithVote = <gi.IdentityRefWithVote>{};
         approve.id = pullRequest.createdBy.id;
         approve.vote = 10;
         await gitApi.createPullRequestReviewer(approve, repository.id, pullRequest.pullRequestId, pullRequest.createdBy.id, project);
+    }
+
+    if (tl.getBoolInput("autoComplete")) {
+        let setAutoComplete = <gi.GitPullRequest>{};
+        setAutoComplete.autoCompleteSetBy = pullRequest.createdBy;
+        await gitApi.updatePullRequest(setAutoComplete, repository.id, pullRequest.pullRequestId, project);
     }
 }
 
