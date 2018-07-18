@@ -24,6 +24,11 @@
             "isExpanded": true
         },
         {
+            "name": "policies",
+            "displayName": "Policies",
+            "isExpanded": true
+        },
+        {
           "name": "completion",
           "displayName": "Completion options",
           "isExpanded": true
@@ -46,6 +51,15 @@
             "required": true,
             "helpMarkDown": "The branch the pull request will merge **to**.",
             "groupName": "branches"
+        },
+        {
+            "name": "approve",
+            "type": "boolean",
+            "label": "Approve automatically",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "The build service account will approve the pull request",
+            "groupName": "policies"
         },
         {
             "name": "autoComplete",

@@ -52,7 +52,11 @@ async function run() {
     console.log(`creating pull request for source branch: "${sourceBranch}" and target branch: "${targetBranch}"`);
     createPullRequest.sourceRefName = sourceBranch;
     createPullRequest.targetRefName = targetBranch;
-    createPullRequest.title = "Automatic pull request from test to master";
+    createPullRequest.title = `Automatic pull request from "${sourceBranch}" to "${targetBranch}"`;
+    createPullRequest.completionOptions = <gi.GitPullRequestCompletionOptions>{};
+    createPullRequest.completionOptions.bypassPolicy = tl.getBoolInput("bypassPolicy");
+    createPullRequest.completionOptions.deleteSourceBranch = tl.getBoolInput("deleteSourceBranch");
+    createPullRequest.completionOptions.squashMerge = tl.getBoolInput("squashMerge");
 
     let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repository.id, project, true);
     console.log(`created pull request with id ${pullRequest.pullRequestId}`);
@@ -62,19 +66,16 @@ async function run() {
     if (autoComplete) {
         let setAutoComplete = <gi.GitPullRequest>{};
         setAutoComplete.autoCompleteSetBy = pullRequest.createdBy;
-        setAutoComplete.completionOptions = <gi.GitPullRequestCompletionOptions>{};
-        setAutoComplete.completionOptions.bypassPolicy = tl.getBoolInput("bypassPolicy");
-        setAutoComplete.completionOptions.deleteSourceBranch = tl.getBoolInput("deleteSourceBranch");
-        setAutoComplete.completionOptions.squashMerge = tl.getBoolInput("squashMerge");
-
         await gitApi.updatePullRequest(setAutoComplete, repository.id, pullRequest.pullRequestId, project);
     }
 
-    let approve: gi.IdentityRefWithVote = <gi.IdentityRefWithVote>{};
-    approve.id = pullRequest.createdBy.id;
-    approve.vote = 10;
+    if (tl.getBoolInput("approve")) {
 
-    await gitApi.createPullRequestReviewer(approve, repository.id, pullRequest.pullRequestId, pullRequest.createdBy.id, project);
+        let approve: gi.IdentityRefWithVote = <gi.IdentityRefWithVote>{};
+        approve.id = pullRequest.createdBy.id;
+        approve.vote = 10;
+        await gitApi.createPullRequestReviewer(approve, repository.id, pullRequest.pullRequestId, pullRequest.createdBy.id, project);
+    }
 }
 
 let taskManifestPath = path.join(__dirname, "task.json");

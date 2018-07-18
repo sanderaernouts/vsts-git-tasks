@@ -6,19 +6,20 @@
   "scripts": {
     "initdev:npm": "npm install",
     "initdev": "npm run initdev:npm",
-    "build":"tsc && tslint --project .",
+    "build": "tsc && tslint --project .",
     "build:prod": "npm run build && npm dedupe && npm prune --production"
   },
   "author": "Sander Aernouts",
   "license": "ISC",
   "dependencies": {
     "npm": "^6.1.0",
-    "typescript": "^2.9.2",
     "vso-node-api": "^6.5.0",
     "vsts-task-lib": "^2.5.0"
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
-    "tslint": "^5.11.0"
+    "tsc": "^1.20150623.0",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
   }
 }
