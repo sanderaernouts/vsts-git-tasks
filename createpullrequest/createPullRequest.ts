@@ -53,7 +53,7 @@ async function run() {
     createPullRequest.sourceRefName = sourceBranch;
     createPullRequest.targetRefName = targetBranch;
     createPullRequest.title = `Automatic pull request from "${sourceBranch}" to "${targetBranch}"`;
-    createPullRequest.completionOptions = <gi.GitPullRequestCompletionOptions>{};
+    createPullRequest.completionOptions = <gi.GitPullRequestCompletionOptions> {};
     createPullRequest.completionOptions.bypassPolicy = tl.getBoolInput("bypassPolicy");
     createPullRequest.completionOptions.deleteSourceBranch = tl.getBoolInput("deleteSourceBranch");
     createPullRequest.completionOptions.squashMerge = tl.getBoolInput("squashMerge");

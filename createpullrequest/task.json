@@ -3,11 +3,10 @@
     "name": "GitCreatePullRequest",
     "friendlyName": "Create pull request",
     "description": "Automatically create a git pull request.",
-    "helpMarkDown": "Create a pull request in the build's git repository.",
+    "helpMarkDown": "Create a pull request in the build's git repository. Currently only works in a build that uses a Git repository from TFS/VSTS.",
     "category": "Utility",
     "runsOn": [
-        "Agent",
-        "DeploymentGroup"
+        "Agent"
     ],
     "author": "Sander Aernouts",
     "version": {

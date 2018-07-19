@@ -18,6 +18,11 @@
     "categories": [
         "Build and release"
     ],
+    "screenshots": [
+        {
+          "path": "images/screenshots/createpullrequest.png"
+        }
+    ],
     "content": {
         "details": {
             "path": "README.md"
