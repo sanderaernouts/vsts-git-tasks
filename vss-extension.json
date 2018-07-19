@@ -32,6 +32,10 @@
         }
     },
     "tags": [
+        "git",
+        "build",
+        "pullrequest",
+        "Xpirit"
     ],
     "links": {
         "home": {
