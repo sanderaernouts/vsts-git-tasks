@@ -53,7 +53,7 @@
         "theme": "light"
     },
     "icons": {
-        "default": "extension-icon.png"        
+        "default": "images/extension-icon.png"        
     },
     "files": [
         {
