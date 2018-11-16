@@ -104,7 +104,7 @@ async function getWebApi(): Promise<vm.WebApi> {
 async function getApi(serverUrl: string): Promise<vm.WebApi> {
     return new Promise<vm.WebApi>(async (resolve, reject) => {
         try {
-            let token = getEnv("SYSTEM_ACCESSTOKEN");
+            let token = tl.getEndpointAuthorizationParameter("SystemVssConnection", "AccessToken", false);
             let authHandler = vm.getPersonalAccessTokenHandler(token);
             let option = undefined;
             let vsts: vm.WebApi = new vm.WebApi(serverUrl, authHandler, option);
