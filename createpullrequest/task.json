@@ -61,6 +61,14 @@
             "groupName": "policies"
         },
         {
+            "name": "requestedByAsReviewer",
+            "type": "boolean",
+            "label": "Add user requesting build as reviewer",
+            "required": false,
+            "helpMarkDown": "If checked the user identified by `$(Build.RequestedForId)` will be added as a reviewer",
+            "groupName": "policies"
+        },
+        {
             "name": "autoComplete",
             "type": "boolean",
             "label": "Auto complete",
@@ -77,7 +85,6 @@
             "required": false,
             "helpMarkDown": "Bypass policies set on the branch the pull request merges into.",
             "groupName": "completion"
-
         },
         {
             "name": "deleteSourceBranch",
