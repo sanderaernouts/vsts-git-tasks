@@ -57,6 +57,13 @@ async function run() {
     createPullRequest.completionOptions.bypassPolicy = tl.getBoolInput("bypassPolicy");
     createPullRequest.completionOptions.deleteSourceBranch = tl.getBoolInput("deleteSourceBranch");
     createPullRequest.completionOptions.squashMerge = tl.getBoolInput("squashMerge");
+    
+    const requestedByAsReviewer = tl.getBoolInput("requestedByAsReviewer");
+    createPullRequest.reviewers = [];
+    if (requestedByAsReviewer) {
+        const reviewer = <gi.IdentityRefWithVote> {id: tl.getVariable("Build.RequestedForId")}
+        createPullRequest.reviewers.push(reviewer);
+    }
 
     let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repository.id, project, true);
     console.log(`created pull request with id ${pullRequest.pullRequestId}`);
