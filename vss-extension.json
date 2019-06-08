@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "git-buildtasks",
     "name": "git tasks",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "sander-aernouts",
     "public" : false,
     "repository": {
