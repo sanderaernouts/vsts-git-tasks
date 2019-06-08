@@ -10,15 +10,24 @@ trigger:
   batch: true
 
 steps:
-- powershell: |
-    $v = Get-Content .\version.json | ConvertFrom-Json | select -first 1
-    Write-Output ("##vso[build.updatebuildnumber]{0}.{1}.{2}" -f $v.major, $v.minor, $env:BUILD_BUILDID)
-  displayName: Update build number
-  errorActionPreference: stop
 
 - task: NodeTool@0
   inputs:
-    version: '9.x'
+    versionSpec: '9.x'
+- script: >
+    npx -p semantic-release
+    -p @semantic-release/git
+    -p semantic-release-ado
+    semantic-release
+    --branch $(Build.SourceBranchName)
+    --dry-run
+    --prepare
+  env: { GH_TOKEN: $(GitHubToken) }
+  displayName: 'Semantic release'
+
+- powershell: |
+    echo "##vso[task.setvariable variable=versionNumber;isOutput=true]$(nextRelease)"
+  name: setOutputVar
 
 - task: Npm@1
   displayName: 'npm install: root'
