@@ -1,0 +1,123 @@
+
+trigger:
+  branches:
+    include:
+    - 'master'
+    - 'hotfix/*'
+
+pr:
+  autoCancel: 'true'
+  branches:
+    include:
+    - 'master'
+stages:
+- stage: build
+  displayName: 'Build'
+  jobs:
+  - job: 'compile'
+    displayName: 'Compile extension'
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    continueOnError: 'true'
+    steps:
+    - powershell: |
+        $v = Get-Content .\version.json | ConvertFrom-Json | select -first 1
+        $version = ("{0}.{1}.{2}" -f $v.major, $v.minor, $env:BUILD_BUILDID)
+        echo "##vso[build.updatebuildnumber]$version"
+        Set-Content $version -Path $(Build.ArtifactStagingDirectory)\version.txt -Force
+      displayName: 'set version'
+      name: setVersionStep
+      errorActionPreference: stop
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '9.x'
+
+    - task: Npm@1
+      displayName: 'npm install: root'
+      inputs:
+        command: install
+
+    - task: Npm@1
+      displayName: 'npm install: createpullrequest'
+      inputs:
+        command: install
+        workingDir: createpullrequest
+
+    - task: Npm@1
+      displayName: 'npm run compile'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'run compile'
+
+    - task: Npm@1
+      displayName: 'npm prune: root'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'prune --production'
+
+    - task: Npm@1
+      displayName: 'npm prune: createpullrequest'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'prune --production'
+        workingDir: createpullrequest
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        Contents: |
+          **/*
+          !.git/**/*
+          !.git*
+          !azure-pipelines.yml
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishPipelineArtifact@0
+      displayName: 'Publish Artifact: drop'
+      inputs:
+          artifactName: 'drop'
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+- stage: e2e
+  displayName: 'End to end tests'
+  dependsOn: build 
+  condition: succeeded()
+  jobs:
+    # track deployments on the environment
+  - deployment: publish_extension
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    # creates an environment if it doesn’t exist
+    environment: 'test'
+    strategy:
+      # default deployment strategy
+      runOnce:
+        deploy:
+          steps:          
+          #- task: DownloadPipelineArtifact@0
+          #  inputs:
+          #    artifactName: 'drop'
+          #    targetPath: $(System.DefaultWorkingDirectory)
+          - powershell: | 
+              $version=(Get-Content $(Agent.BuildDirectory)\drop\version.txt)
+              echo "##vso[task.setvariable variable=version]$version"
+              echo `$version=$version
+            displayName: get version
+          - task: TfxInstaller@1
+            inputs:
+              version: 'v0.6.x'
+          - task: PublishExtension@1
+            inputs:
+              connectTo: 'VsTeam'
+              connectedServiceName: 'visual studio marketplace'
+              fileType: 'manifest'
+              extensionVersion: $(version)
+              rootFolder: $(Agent.BuildDirectory)/drop
+              publisherId: 'sander-aernouts'
+              extensionName: 'VFS for git tasks (private preview)'
+              extensionId: 'vsts-git-tasks'
+              extensionTag: '-private-preview'
+              extensionVisibility: 'privatepreview'
+              shareWith: 'sandera-vsts-tasks-test'
+
