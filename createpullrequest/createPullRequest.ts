@@ -57,11 +57,11 @@ async function run() {
     createPullRequest.completionOptions.bypassPolicy = tl.getBoolInput("bypassPolicy");
     createPullRequest.completionOptions.deleteSourceBranch = tl.getBoolInput("deleteSourceBranch");
     createPullRequest.completionOptions.squashMerge = tl.getBoolInput("squashMerge");
-    
+
     const requestedByAsReviewer = tl.getBoolInput("requestedByAsReviewer");
     createPullRequest.reviewers = [];
     if (requestedByAsReviewer) {
-        const reviewer = <gi.IdentityRefWithVote> {id: tl.getVariable("Build.RequestedForId")}
+        const reviewer = <gi.IdentityRefWithVote> {id: tl.getVariable("Build.RequestedForId")};
         createPullRequest.reviewers.push(reviewer);
     }
 
