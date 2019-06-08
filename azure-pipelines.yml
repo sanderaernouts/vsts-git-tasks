@@ -1,0 +1,69 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+trigger:
+  batch: true
+
+steps:
+- powershell: |
+    $v = Get-Content .\version.json | ConvertFrom-Json | select -first 1
+    Write-Output ("##vso[build.updatebuildnumber]{0}.{1}.{2}" -f $v.major, $v.minor, $env:BUILD_BUILDID)
+  displayName: Update build number
+  errorActionPreference: stop
+
+- task: NodeTool@0
+  inputs:
+    version: '9.x'
+
+- task: Npm@1
+  displayName: 'npm install: root'
+  inputs:
+    command: install
+
+- task: Npm@1
+  displayName: 'npm install: vfs-for-git'
+  inputs:
+    command: install
+    workingDir: vfs-for-git
+
+- task: Npm@1
+  displayName: 'npm run compile'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run compile'
+
+- task: Npm@1
+  displayName: 'npm prune: root'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'prune --production'
+
+- task: Npm@1
+  displayName: 'npm prune: vfs-for-git'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'prune --production'
+    workingDir: vfs-for-git
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: |
+     **/*
+     !.git/**/*
+     !.git*
+     !azure-pipelines.yml
+     
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
