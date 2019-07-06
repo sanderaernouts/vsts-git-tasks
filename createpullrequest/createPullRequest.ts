@@ -1,10 +1,10 @@
 import path = require("path");
 
-import * as vm from "vso-node-api";
-import * as lim from "vso-node-api/interfaces/LocationsInterfaces";
+import * as azdev from "azure-devops-node-api";
+import * as lim from "azure-devops-node-api/interfaces/LocationsInterfaces";
 
-import * as ga from "vso-node-api/GitApi";
-import * as gi from "vso-node-api/interfaces/GitInterfaces";
+import * as ga from "azure-devops-node-api/GitApi";
+import * as gi from "azure-devops-node-api/interfaces/GitInterfaces";
 
 import * as tl from "azure-pipelines-task-lib/task";
 
@@ -16,8 +16,8 @@ async function run() {
         throw `detected a repository provider that is not TfsGit. Provider "${provider}" is not supported.`;
     }
 
-    let vsts: vm.WebApi = await getWebApi();
-    let gitApi: ga.IGitApi = await vsts.getGitApi();
+    let azdevApi: azdev.WebApi = await getWebApi();
+    let gitApi: ga.IGitApi = await azdevApi.getGitApi();
 
     const project: string = getProject();
     const repositoryName = getRepositoryName();
@@ -102,23 +102,23 @@ function getEnv(name: string): string {
     return val;
 }
 
-async function getWebApi(): Promise<vm.WebApi> {
+async function getWebApi(): Promise<azdev.WebApi> {
     let serverUrl = getEnv("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
     console.log(`connecting to VSTS web API"s on server: "${serverUrl}"`);
     return await getApi(serverUrl);
 }
 
-async function getApi(serverUrl: string): Promise<vm.WebApi> {
-    return new Promise<vm.WebApi>(async (resolve, reject) => {
+async function getApi(serverUrl: string): Promise<azdev.WebApi> {
+    return new Promise<azdev.WebApi>(async (resolve, reject) => {
         try {
             let token = tl.getEndpointAuthorizationParameter("SystemVssConnection", "AccessToken", false);
-            let authHandler = vm.getPersonalAccessTokenHandler(token);
+            let authHandler = azdev.getPersonalAccessTokenHandler(token);
             let option = undefined;
-            let vsts: vm.WebApi = new vm.WebApi(serverUrl, authHandler, option);
-            let connData: lim.ConnectionData = await vsts.connect();
+            let azdevApi: azdev.WebApi = new azdev.WebApi(serverUrl, authHandler, option);
+            let connData: lim.ConnectionData = await azdevApi.connect();
 
             console.log(`authenticated as user: "${connData.authenticatedUser.providerDisplayName}"`);
-            resolve(vsts);
+            resolve(azdevApi);
         }
         catch (err) {
             reject(err);
