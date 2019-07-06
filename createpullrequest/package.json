@@ -12,9 +12,9 @@
   "author": "Sander Aernouts",
   "license": "ISC",
   "dependencies": {
+    "azure-pipelines-task-lib": "^2.8.0",
     "npm": "^6.10.0",
-    "vso-node-api": "^6.5.0",
-    "vsts-task-lib": "^2.7.0"
+    "vso-node-api": "^6.5.0"
   },
   "devDependencies": {
     "@types/node": "^10.14.12",

@@ -6,7 +6,7 @@ import * as lim from "vso-node-api/interfaces/LocationsInterfaces";
 import * as ga from "vso-node-api/GitApi";
 import * as gi from "vso-node-api/interfaces/GitInterfaces";
 
-import * as tl from "vsts-task-lib/task";
+import * as tl from "azure-pipelines-task-lib/task";
 
 async function run() {
 
