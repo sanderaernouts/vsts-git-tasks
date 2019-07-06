@@ -24,9 +24,7 @@ stages:
         $v = Get-Content .\version.json | ConvertFrom-Json | select -first 1
         $version = ("{0}.{1}.{2}" -f $v.major, $v.minor, $env:BUILD_BUILDID)
         echo "##vso[build.updatebuildnumber]$version"
-        Set-Content $version -Path $(Build.ArtifactStagingDirectory)\version.txt -Force
       displayName: 'set version'
-      name: setVersionStep
       errorActionPreference: stop
     - task: NodeTool@0
       inputs:
@@ -79,45 +77,3 @@ stages:
       inputs:
           artifactName: 'drop'
           targetPath: '$(Build.ArtifactStagingDirectory)'
-- stage: e2e
-  displayName: 'End to end tests'
-  dependsOn: build 
-  condition: succeeded()
-  jobs:
-    # track deployments on the environment
-  - deployment: publish_extension
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    # creates an environment if it doesn’t exist
-    environment: 'test'
-    strategy:
-      # default deployment strategy
-      runOnce:
-        deploy:
-          steps:          
-          #- task: DownloadPipelineArtifact@0
-          #  inputs:
-          #    artifactName: 'drop'
-          #    targetPath: $(System.DefaultWorkingDirectory)
-          - powershell: | 
-              $version=(Get-Content $(Agent.BuildDirectory)\drop\version.txt)
-              echo "##vso[task.setvariable variable=version]$version"
-              echo `$version=$version
-            displayName: get version
-          - task: TfxInstaller@1
-            inputs:
-              version: 'v0.6.x'
-          - task: PublishExtension@1
-            inputs:
-              connectTo: 'VsTeam'
-              connectedServiceName: 'visual studio marketplace'
-              fileType: 'manifest'
-              extensionVersion: $(version)
-              rootFolder: $(Agent.BuildDirectory)/drop
-              publisherId: 'sander-aernouts'
-              extensionName: 'VFS for git tasks (private preview)'
-              extensionId: 'vsts-git-tasks'
-              extensionTag: '-private-preview'
-              extensionVisibility: 'privatepreview'
-              shareWith: 'sandera-vsts-tasks-test'
-
