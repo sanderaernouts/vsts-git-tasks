@@ -10,40 +10,78 @@ import * as tl from "azure-pipelines-task-lib/task";
 
 async function run() {
 
-    let provider = getRepositoryProvider();
+    let selectionMethod = tl.getInput("repositorySelectionMethod", true);
+    let repositoryId:string = null;
+    let project:string = null;
 
-    if (provider !== "TfsGit") {
-        throw `detected a repository provider that is not TfsGit. Provider "${provider}" is not supported.`;
+    if(selectionMethod === "currentBuild") {
+
+        let provider = getRepositoryProvider();
+
+        if (provider !== "TfsGit") {
+            throw `detected a repository provider that is not TfsGit. Provider "${provider}" is not supported.`;
+        }
+
+        let azdevApi: azdev.WebApi = await getWebApi();
+        let gitApi: ga.IGitApi = await azdevApi.getGitApi();
+
+        project = getProject();
+        let repositoryName = getRepositoryName();
+
+        console.log(`searching for repository "${repositoryName}" in project "${project}"`);
+
+        const respositories: gi.GitRepository[] = await gitApi.getRepositories(project);
+
+        if (respositories) {
+            tl.debug(`found ${respositories.length} respositories:`);
+            respositories.forEach((repository, index) => {
+                tl.debug(repository.name);
+            });
+        } else {
+            throw "cannot find any repositories";
+        }
+
+        let repository = respositories.filter(repository => {
+            return repository.name === repositoryName;
+        })[0];
+
+        if (!repository) {
+            throw `cannot find repository with name "${repositoryName}"`;
+        }
+
+        tl.debug(`found repository "${repository.name}" with id "${repository.id}"`);
+        repositoryId = repository.id
+    }else{
+        repositoryId = tl.getInput("gitRepositoryId", true);
+        project = tl.getInput("projectId", true);
     }
 
+    await CreatePullRequest(project, repositoryId);
+}
+
+let taskManifestPath = path.join(__dirname, "task.json");
+tl.debug("Setting resource path to " + taskManifestPath);
+tl.setResourcePath(taskManifestPath);
+
+run().then((result) => {
+    tl.setResult(tl.TaskResult.Succeeded, "Create pull request succeeded");
+}).catch((error) => {
+    tl.setResult(tl.TaskResult.Failed, !!error.message ? error.message : error);
+});
+
+function getEnv(name: string): string {
+    let val = process.env[name];
+    if (!val) {
+        console.error(name + " environment variable is not set");
+        process.exit(1);
+    }
+    return val;
+}
+
+async function CreatePullRequest(project:string, repositoryId:string) {
     let azdevApi: azdev.WebApi = await getWebApi();
     let gitApi: ga.IGitApi = await azdevApi.getGitApi();
 
-    const project: string = getProject();
-    const repositoryName = getRepositoryName();
-
-    console.log(`searching for repository "${repositoryName}" in project "${project}"`);
-
-    const respositories: gi.GitRepository[] = await gitApi.getRepositories(project);
-
-    if (respositories) {
-        tl.debug(`found ${respositories.length} respositories:`);
-        respositories.forEach((repository, index) => {
-            tl.debug(repository.name);
-        });
-    } else {
-        throw "cannot find any repositories";
-    }
-
-    let repository = respositories.filter(repository => {
-        return repository.name === repositoryName;
-    })[0];
-
-    if (!repository) {
-        throw `cannot find repository with name "${repositoryName}"`;
-    }
-
-    tl.debug(`found repository "${repository.name}" with id "${repository.id}"`);
     let createPullRequest: gi.GitPullRequest = <gi.GitPullRequest>{};
 
     let sourceBranch = tl.getInput("sourceBranch", true);
@@ -65,7 +103,7 @@ async function run() {
         createPullRequest.reviewers.push(reviewer);
     }
 
-    let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repository.id, project, true);
+    let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repositoryId, project, true);
     console.log(`created pull request with id ${pullRequest.pullRequestId}`);
 
     if (tl.getBoolInput("approve")) {
@@ -73,33 +111,14 @@ async function run() {
         let approve: gi.IdentityRefWithVote = <gi.IdentityRefWithVote>{};
         approve.id = pullRequest.createdBy.id;
         approve.vote = 10;
-        await gitApi.createPullRequestReviewer(approve, repository.id, pullRequest.pullRequestId, pullRequest.createdBy.id, project);
+        await gitApi.createPullRequestReviewer(approve, repositoryId, pullRequest.pullRequestId, pullRequest.createdBy.id, project);
     }
 
     if (tl.getBoolInput("autoComplete")) {
         let setAutoComplete = <gi.GitPullRequest>{};
         setAutoComplete.autoCompleteSetBy = pullRequest.createdBy;
-        await gitApi.updatePullRequest(setAutoComplete, repository.id, pullRequest.pullRequestId, project);
+        await gitApi.updatePullRequest(setAutoComplete, repositoryId, pullRequest.pullRequestId, project);
     }
-}
-
-let taskManifestPath = path.join(__dirname, "task.json");
-tl.debug("Setting resource path to " + taskManifestPath);
-tl.setResourcePath(taskManifestPath);
-
-run().then((result) => {
-    tl.setResult(tl.TaskResult.Succeeded, "Create pull request succeeded");
-}).catch((error) => {
-    tl.setResult(tl.TaskResult.Failed, !!error.message ? error.message : error);
-});
-
-function getEnv(name: string): string {
-    let val = process.env[name];
-    if (!val) {
-        console.error(name + " environment variable is not set");
-        process.exit(1);
-    }
-    return val;
 }
 
 async function getWebApi(): Promise<azdev.WebApi> {
