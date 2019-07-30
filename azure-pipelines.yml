@@ -10,6 +10,10 @@ pr:
   branches:
     include:
     - 'master'
+variables:
+  extension_id: 'git-buildtasks'
+  extension_name: 'git tasks'
+  extension_publisher: 'sander-aernouts'
 stages:
 - stage: build
   displayName: 'Build'
@@ -77,3 +81,52 @@ stages:
       inputs:
           artifactName: 'drop'
           targetPath: '$(Build.ArtifactStagingDirectory)'
+- stage: e2e
+  variables:
+    extension_tag: '-private-preview'
+    extension_name_postfix: ' (private preview)'
+    extension_share_with: 'sandera-vsts-tasks-test'
+
+  displayName: 'End to End'
+  jobs:
+  - deployment: deploy_private
+    displayName: 'Deploy to Azure Marketplace (private)'
+    environment: 'Visual Studio Marketplace (private)'
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    continueOnError: 'false'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: ms-devlabs.vsts-developer-tools-build-tasks.tfx-installer-build-task.TfxInstaller@1
+            displayName: 'Use Node CLI for Azure DevOps (tfx-cli): v0.6.x'
+          - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishExtension@1
+            displayName: 'Publish Extension'
+            inputs:
+              connectedServiceName: 'visual studio marketplace'
+              rootFolder: '$(System.DefaultWorkingDirectory)/sanderaernouts.vsts-git-tasks/drop'
+              publisherId: '$(extension_publisher)'
+              extensionId: '$(extension_id)'
+              extensionTag: '$(extension_tag)'
+              extensionName: '$(extension_name)$(extension_name_postfix)'
+              extensionVersion: '$(Build.BuildNumber)'
+              extensionVisibility: private
+              extensionPricing: free
+              shareWith: '$(extension_share_with)'  
+          - task: IsAzureDevOpsExtensionValid@2
+            inputs:
+              connectTo: 'VsTeam'
+              connectedServiceName: 'visual studio marketplace'
+              method: 'id'
+              publisherId: '$(extension_publisher)'
+              extensionId: '$(extension_id)'
+              extensionTag: '$(extension_tag)'
+              extensionVersion: '$(extension_version)'
+              maxRetries: '10'
+              minTimeout: '2'
+  - deployment: run_tests
+    displayName: 'Run end-to-end tests'
+    environment: 'Visual Studio Marketplace (private)'
+    pool:
+      vmImage: 'Ubuntu-16.04'
