@@ -33,9 +33,9 @@
             "isExpanded": true
         },
         {
-          "name": "completion",
-          "displayName": "Completion options",
-          "isExpanded": true
+            "name": "completion",
+            "displayName": "Completion options",
+            "isExpanded": true
         }
     ],
     "instanceNameFormat": "Create pull request",
@@ -160,8 +160,8 @@
             "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
             "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
             "initialContextTemplate": "{\"skip\": \"0\"}"
-            },
-            {
+        },
+        {
             "endpointId": "tfs:teamfoundation",
             "target": "gitRepositoryId",
             "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/git/repositories",
@@ -171,7 +171,16 @@
             },
             "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
         }
-
+    ],
+    "OutputVariables": [
+        {
+            "name": "PullRequestId",
+            "description": "Pull Request ID"
+        },
+        {
+            "name": "PullRequestUrl",
+            "description": "Pull Request URL"
+        }
     ],
     "execution": {
         "Node": {
