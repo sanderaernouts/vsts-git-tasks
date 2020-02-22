@@ -105,8 +105,9 @@ async function CreatePullRequest(project:string, repositoryId:string) {
 
     let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repositoryId, project, true);
     console.log(`created pull request with id ${pullRequest.pullRequestId}`);
-    console.log(`##vso[task.setvariable variable=PullRequestId;]${pullRequest.pullRequestId}`);
-    console.log(`##vso[task.setvariable variable=PullRequestUrl;]${pullRequest.repository.webUrl}/pullrequest/${pullRequest.pullRequestId}`);
+
+    tl.setVariable('PullRequestId', String(pullRequest.pullRequestId));
+    tl.setVariable('PullRequestUrl', `${pullRequest.repository.webUrl}/pullrequest/${pullRequest.pullRequestId}`);
 
     if (tl.getBoolInput("approve")) {
 
