@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.13.5
+version: v1.14.1
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
@@ -16,3 +16,9 @@ patch:
         patched: '2019-07-06T14:44:09.307Z'
     - tfx-cli > archiver > zip-stream > archiver-utils > lodash:
         patched: '2019-07-06T14:44:09.307Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > lodash:
+        patched: '2020-03-09T11:46:38.393Z'
+    - snyk > snyk-nuget-plugin > dotnet-deps-parser > lodash:
+        patched: '2020-03-09T11:46:38.393Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/dep-graph > lodash:
+        patched: '2020-03-09T11:46:38.393Z'
