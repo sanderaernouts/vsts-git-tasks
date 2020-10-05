@@ -17,7 +17,7 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
-    "snyk": "^1.298.1"
+    "snyk": "^1.406.0"
   },
   "snyk": true
 }
