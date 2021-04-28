@@ -1,0 +1,49 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: snyk
+    versions:
+    - 1.439.0
+    - 1.440.1
+    - 1.446.0
+    - 1.454.0
+    - 1.458.0
+    - 1.462.0
+    - 1.474.0
+    - 1.486.0
+    - 1.503.0
+    - 1.511.0
+    - 1.522.0
+    - 1.530.0
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.22
+    - 14.14.25
+    - 14.14.28
+    - 14.14.31
+    - 14.14.32
+    - 14.14.34
+    - 14.14.35
+    - 14.14.37
+  - dependency-name: tfx-cli
+    versions:
+    - 0.8.3
+    - 0.9.0
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+    - 4.1.5
+    - 4.2.2
+    - 4.2.3
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  commit-message:
+    prefix: fix
+    prefix-development: chore
+    include: scope
