@@ -118,12 +118,14 @@ async function CreatePullRequest(project:string, repositoryId:string) {
         approve.id = pullRequest.createdBy.id;
         approve.vote = 10;
         await gitApi.createPullRequestReviewer(approve, repositoryId, pullRequest.pullRequestId, pullRequest.createdBy.id, project);
+        console.log(`pull request approved by ${pullRequest.createdBy.id}`);
     }
 
     if (tl.getBoolInput("autoComplete")) {
         let setAutoComplete = <gi.GitPullRequest>{};
         setAutoComplete.autoCompleteSetBy = pullRequest.createdBy;
         await gitApi.updatePullRequest(setAutoComplete, repositoryId, pullRequest.pullRequestId, project);
+        console.log(`pull request auto completed`);
     }
 }
 
