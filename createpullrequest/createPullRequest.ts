@@ -90,7 +90,7 @@ async function CreatePullRequest(project:string, repositoryId:string) {
     console.log(`creating pull request for source branch: "${sourceBranch}" and target branch: "${targetBranch}"`);
     createPullRequest.sourceRefName = sourceBranch;
     createPullRequest.targetRefName = targetBranch;
-    createPullRequest.title = `Automatic pull request from "${sourceBranch}" to "${targetBranch}"`;
+    createPullRequest.title = tl.getInput("title", true);
     createPullRequest.completionOptions = <gi.GitPullRequestCompletionOptions> {};
     createPullRequest.completionOptions.bypassPolicy = tl.getBoolInput("bypassPolicy");
     createPullRequest.completionOptions.deleteSourceBranch = tl.getBoolInput("deleteSourceBranch");
@@ -104,10 +104,13 @@ async function CreatePullRequest(project:string, repositoryId:string) {
     }
 
     let pullRequest: gi.GitPullRequest = await gitApi.createPullRequest(createPullRequest, repositoryId, project, true);
-    console.log(`created pull request with id ${pullRequest.pullRequestId}`);
+
+    let pullRequestUrl = `${pullRequest.repository.webUrl}/pullrequest/${pullRequest.pullRequestId}`
+    console.log(`=================================================`);
+    console.log(`created pull request with id ${pullRequest.pullRequestId}: ${pullRequestUrl}`);
 
     tl.setVariable('PullRequestId', String(pullRequest.pullRequestId));
-    tl.setVariable('PullRequestUrl', `${pullRequest.repository.webUrl}/pullrequest/${pullRequest.pullRequestId}`);
+    tl.setVariable('PullRequestUrl', `${pullRequestUrl}`);
 
     if (tl.getBoolInput("approve")) {
 
