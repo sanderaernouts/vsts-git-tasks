@@ -12,8 +12,8 @@
   "author": "Sander Aernouts",
   "license": "ISC",
   "dependencies": {
-    "azure-devops-node-api": "^9.0.1",
-    "azure-pipelines-task-lib": "^2.8.0"
+    "azure-devops-node-api": "^10.2.2",
+    "azure-pipelines-task-lib": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^10.14.12",
