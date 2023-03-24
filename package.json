@@ -5,7 +5,7 @@
     "clean": "rimraf ./*.vsix",
     "compile": "tsc -p .",
     "install-task-lib": "cd MyTask && npm install --save-dev",
-    "snyk-protect": "snyk protect",
+    "snyk-protect": "snyk-protect",
     "prepare": "npm run snyk-protect"
   },
   "devDependencies": {
@@ -17,7 +17,7 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
-    "snyk": "^1.298.1"
+    "@snyk/protect": "latest"
   },
   "snyk": true
 }
