@@ -17,7 +17,7 @@ stages:
   - job: 'compile'
     displayName: 'Compile extension'
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: 'ubuntu-20.04'
     continueOnError: 'true'
     steps:
     - powershell: |
@@ -33,12 +33,14 @@ stages:
     - task: Npm@1
       displayName: 'npm install: root'
       inputs:
-        command: install
+        command: 'custom'
+        customCommand: install --ignore-scripts
 
     - task: Npm@1
       displayName: 'npm install: createpullrequest'
       inputs:
-        command: install
+        command: 'custom'
+        customCommand: install --ignore-scripts
         workingDir: createpullrequest
 
     - task: Npm@1

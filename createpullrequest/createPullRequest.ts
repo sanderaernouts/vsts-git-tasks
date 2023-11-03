@@ -19,9 +19,11 @@ async function run() {
         let provider = getRepositoryProvider();
 
         if (provider !== "TfsGit") {
-            throw `detected a repository provider that is not TfsGit. Provider "${provider}" is not supported.`;
+            throw `detected a repository provider that is not TfsGit. Provider "${provider}" is not supported. `;
         }
 
+        tl.warn("this task is deprecated and is no longer being maintained. The 'az repo pr create' Azure CLI command combined with the Azure CLI task offers similar. See: https://learn.microsoft.com/en-us/cli/azure/repos/pr?view=azure-cli-latest#az-repos-pr-create.");
+        
         let azdevApi: azdev.WebApi = await getWebApi();
         let gitApi: ga.IGitApi = await azdevApi.getGitApi();
 
