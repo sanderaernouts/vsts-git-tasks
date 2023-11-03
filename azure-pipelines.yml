@@ -17,7 +17,7 @@ stages:
   - job: 'compile'
     displayName: 'Compile extension'
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: 'ubuntu-20.04'
     continueOnError: 'true'
     steps:
     - powershell: |

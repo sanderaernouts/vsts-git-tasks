@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "git-buildtasks",
-    "name": "git tasks",
+    "name": "git tasks [deprecated]",
     "version": "1.0.9",
     "publisher": "sander-aernouts",
     "public" : false,
@@ -34,8 +34,7 @@
     "tags": [
         "git",
         "build",
-        "pullrequest",
-        "Xpirit"
+        "pullrequest"
     ],
     "links": {
         "home": {

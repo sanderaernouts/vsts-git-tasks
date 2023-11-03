@@ -2,6 +2,7 @@
     "id": "8bf2476b-7cc2-42d7-ae7e-912a5093f3e7",
     "name": "GitCreatePullRequest",
     "friendlyName": "Create pull request",
+    "deprecated": true,
     "description": "Automatically create a git pull request.",
     "helpMarkDown": "Create a pull request in the build's git repository. Currently only works in a build that uses a Git repository from TFS/VSTS.",
     "category": "Utility",
