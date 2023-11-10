@@ -11,7 +11,7 @@
     ],
     "author": "Sander Aernouts",
     "version": {
-        "Major": 1,
+        "Major": 2,
         "Minor": 0,
         "Patch": 0
     },
@@ -80,6 +80,15 @@
             "helpMarkDown": "Git repository you want to create a pull request for",
             "groupName": "repository",
             "visibleRule": "repositorySelectionMethod = select"
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Title",
+            "required": true,
+            "helpMarkDown": "Title of the pull request",
+            "defaultValue": "Automatic pull request",
+            "groupName": ""
         },
         {
             "name": "sourceBranch",
