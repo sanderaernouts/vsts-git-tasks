@@ -4,9 +4,7 @@
     "gallery-publish": "tfx extension publish --rev-version",
     "clean": "rimraf ./*.vsix",
     "compile": "tsc -p .",
-    "install-task-lib": "cd MyTask && npm install --save-dev",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "install-task-lib": "cd MyTask && npm install --save-dev"
   },
   "devDependencies": {
     "@types/node": "^12.6.8",
@@ -15,9 +13,5 @@
   },
   "name": "vstsexttask",
   "private": true,
-  "version": "1.0.0",
-  "dependencies": {
-    "snyk": "^1.298.1"
-  },
-  "snyk": true
+  "version": "1.0.0"
 }
