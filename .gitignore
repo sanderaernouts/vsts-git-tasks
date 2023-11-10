@@ -29,3 +29,6 @@ bld/
 node_modules
 .vscode
 *.vsix
+
+# Jetbrains
+.idea
